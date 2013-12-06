@@ -61,9 +61,10 @@ var
   allnames: string;
   groupType: string;
   justName: string;
+  pathToInput: string;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hio',['help','input','output']);
+  ErrorMsg:=CheckOptions('hiop',['help','input','output','path']);
   if ErrorMsg<>'' then begin
     ShowException(Exception.Create(ErrorMsg));
     Terminate;
@@ -93,6 +94,10 @@ begin
     outFilePath := GetOptionValue('o', 'output');
   end;
 
+  pathToInput := '../svg_files';
+  if HasOption('p','path') then begin
+    pathToInput:=GetOptionValue('p','path');
+  end;
 
   AssignFile(outFile, outFilePath);
   Rewrite(outFile);  // creating the file
@@ -144,7 +149,7 @@ begin
             thisName := TDOMElement(ThisLayer).GetAttribute('inkscape:label');
             WriteLn('Found layer "', thisID, '", Layer is "', thisName, '".');
             allnames := allnames + justname + '_' + thisName + '.dxf ';
-            Writeln(outFile, '%_' + thisName + '.eps: ../svg_files/%.svg'  + #10+
+            Writeln(outFile, '%_' + thisName + '.eps: ' + pathToInput + '/%.svg'  + #10+
            	#9+'inkscape -E $@ $< --export-id=' + thisID + #10 + #10);
       end;
     end else begin
